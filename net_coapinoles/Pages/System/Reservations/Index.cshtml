@@ -1,0 +1,31 @@
+﻿@page
+@section HeadContent {
+    <link rel="stylesheet" href="~/lib/data-table/datatables.min.css" />
+    <link rel="stylesheet" href="~/css/table.css" />
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb ">
+        <li class="breadcrumb-item" aria-current="page">Sistema</li>
+        <li class="breadcrumb-item active" aria-current="page">Reservaciones</li>
+    </ol>
+</nav>
+<div class="row g-3">
+    <div class="col">
+        <h1 class="display-6">
+            Reservaciones
+        </h1>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-primary position-relative top-50 translate-middle-y" asp-page="./Create">
+            <i class="me-1 bi bi-plus-lg"></i> Nueva reservación
+        </a>
+    </div>
+    <div class="col-12">
+        <partial name="/Pages/Components/Reservations/Table.cshtml"/>
+    </div>
+</div>
+
+@section ScriptsContent {
+    <script src="~/lib/data-table/datatables.js"></script>
+    <script type="module" src="~/js/reservations/table.js"></script>
+}

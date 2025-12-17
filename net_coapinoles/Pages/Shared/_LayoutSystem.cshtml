@@ -1,0 +1,159 @@
+﻿@using Services
+@{
+    // Este layout usa como base el layout principal
+    Layout = "_Layout";
+
+    object[] menuItems  = [
+        new {
+            title = "Reservaciones",
+            href = "/System/Reservations/",
+            icon = "bi-calendar-check",
+            subpages = new object[]{
+                new{
+                    title = "Reservar",
+                    href = "/System/Reservations/Create",
+                    icon = "bi-calendar2-plus",
+                },
+                new{
+                    title = "Venta directa",
+                    href = "/System/Reservations/...",
+                    icon = "bi-cart-check",
+                },
+                new{
+                    title = "Mesas",
+                    href = "/System/Reservations/...",
+                    icon = "bi-grid-3x3-gap",
+                    subpages = new object[]{
+                        new{
+                            title = "Nueva mesa",
+                            href = "/System/Reservations/Create",
+                            icon = "bi-plus-square",
+                        }
+                    }
+                }
+            }
+        },
+        new {
+            title = "Reportes",
+            href = "",
+            icon = "bi-flag-fill"
+        },
+        new {
+            title = "Configuración",
+            href = "",
+            icon = "bi-gear-fill"
+        },
+        new {
+            title = "Clientes",
+            href = "",
+            icon = "bi-person-fill"
+        },
+        new {
+            title = "Gastos",
+            href = "",
+            icon = "bi-cash-coin"
+        }
+    ];
+}
+@section Head {
+    @RenderSection("HeadContent", required: false)
+    <script>
+        const token = "@ApiHelper.Token"
+        const APIURL = "@(ApiRoutes.APIURL)"
+    </script>
+}
+<div class="row vh-100 m-0">
+    <div class="sidebar show border-end shadow">
+        <div class="sidebar-header border-bottom">
+            <div class="sidebar-brand sidebar-text">Los coapinoles</div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-title sidebar-text">Gestión del sistema</li>
+            @foreach (dynamic item in menuItems) {
+                var prop = item.GetType().GetProperty("subpages");
+                bool hasSubpages = prop != null;
+
+                if (hasSubpages){
+                    <li class="nav-item nav-group show">
+                        <a class="nav-link nav-group-toggle" href="@item.href">
+                            <i class="nav-icon bi @(item.icon)"></i> @item.title
+                        </a>
+                        <ul class="nav-group-items">
+                            @foreach (dynamic subitem in item.subpages){
+                                var subprop = subitem.GetType().GetProperty("subpages");
+                                bool subhasSubpages = subprop != null;
+                                if (subhasSubpages){
+                                    <li class="nav-item nav-group show">
+                                        <a class="nav-link nav-group-toggle ms-3" href="@subitem.href">
+                                            <i class="nav-icon bi @(subitem.icon)"></i> @subitem.title
+                                        </a>
+                                        <ul class="nav-group-items">
+                                            @foreach (dynamic subChilditem in subitem.subpages){
+                                                <li class="nav-item ms-5">
+                                                    <a class="nav-link" href="@subChilditem.href">
+                                                        <span class="nav-icon"><span class="bi @(subChilditem.icon)"></span></span>
+                                                        @subChilditem.title
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }else{
+                                    <li class="nav-item ms-3">
+                                        <a class="nav-link" href="@subitem.href">
+                                            <span class="nav-icon"><span class="bi @(subitem.icon)"></span></span>
+                                            @subitem.title
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                }else{
+                    <li class="nav-item">
+                        <a class="nav-link" href="@item.href">
+                            <i class="nav-icon bi @(item.icon)"></i> @item.title
+                        </a>
+                    </li>
+                }
+            }
+            <li class="nav-item mt-auto">
+                <a class="nav-link btn border-0" role="button" id="toggleSidebarNarrow">
+                    <i class="nav-icon bi bi-caret-left-fill"></i> Cerrar
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer border-top d-flex p-0 pt-2 pb-2">
+            <div class="dropdown">
+                <a class="btn border-0" role="button" data-coreui-toggle="dropdown" aria-expanded="false">
+                    <i class="nav-icon bi bi-person-circle me-2"></i> 
+                    <span class="sidebar-text">
+                        @User.Identity.Name <i class="ms-1 nav-icon bi bi-caret-down-fill"></i>
+                    </span>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" asp-page="/Logout">
+                            <i class="nav-icon bi bi-box-arrow-in-left"></i> Cerrar sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="col h-100 p-5 overflow-y-auto" style="background: rgb(0 0 0 / 0.05)">
+        @RenderBody()
+    </main>
+
+</div>
+
+@section Scripts {
+    <script src="~/lib/coreui/dist/js/coreui.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("ScriptsContent", required: false)
+}

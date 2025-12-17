@@ -1,0 +1,246 @@
+﻿@page
+@using net_coapinoles.Models
+@using net_coapinoles.Models.DTO
+@using net_coapinoles.Resources.Enums
+@using net_coapinoles.Services.Models
+@model net_coapinoles.Pages.System.Reservations.CreateModel
+@{
+}
+@section HeadContent {
+    <link rel="stylesheet" href="~/lib/MCDatepicker-master/dist/mc-calendar.min.css" />
+    <link rel="stylesheet" href="~/lib/intl-tel-input/intlTelInput.css" />
+    <link rel="stylesheet" href="~/css/create.css" />
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb ">
+        <li class="breadcrumb-item" aria-current="page">Sistema</li>
+        <li class="breadcrumb-item" aria-current="page"><a href="./" class="text-decoration-none">Reservaciones</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nueva reservación</li>
+    </ol>
+</nav>
+<form method="post" class="card needs-validation position-relative" novalidate>
+    <h6 class="card-header">Nueva reservación</h6>
+    <div class="card-body row g-1">
+        <fieldset class="row col-12 g-2">
+            <legend>Información de la reservación</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input id="datepicker" value="" type="text" class="form-control" placeholder=" "autocomplete="off" required>
+                <label for="datepicker">
+                    <i class="bi bi-calendar2-range-fill me-1 text-muted"></i>
+                    Fecha de la reserva
+                </label>
+                <div class="invalid-feedback">
+                    Seleccione la fecha de la reserva
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                <button class="form-control btn border w-100 d-flex" type="button" data-coreui-toggle="dropdown" aria-expanded="false">
+                    <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
+                </button>
+                <ul class="dropdown-menu w-100" data-target="#timepicker">
+                    @foreach(Hora hour in Model.hours ?? []){
+                        <li>
+                            <button class="dropdown-item" type="button" data-content="@(HoursHelper.hourFormat(hour.hora))" data="@(hour.Id)">
+                                @(HoursHelper.hourFormat(hour.hora))
+                            </button>
+                        </li>
+                    }
+                    
+                </ul>
+                <input type="text" value="" id="timepicker" class="d-none" required>
+                <label for="timepicker">
+                    <i class="bi bi-alarm-fill me-1 text-muted"></i>
+                    Hora de reserva
+                </label>
+                <div class="invalid-feedback">
+                    Seleccione la hora de la reserva
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                <button class="form-control btn border w-100 d-flex" for="buffetCheck" type="button" data-coreui-toggle="dropdown" aria-expanded="false">
+                    <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
+                </button>
+                <ul class="dropdown-menu w-100" data-target="#buffetCheck">
+                    <li><button class="dropdown-item" type="button" data="true">Buffet</button></li>
+                    <li><button class="dropdown-item" type="button" data="false">A la carta</button></li>
+                </ul>
+                <input type="text" value="" class="d-none" id="buffetCheck" required>
+                <label for="buffetCheck">
+                    <i class="bi bi-hash me-1 text-muted"></i>
+                    Tipo de reservación
+                </label>
+                <div class="invalid-feedback">
+                    Seleccione el tipo de reservación
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="row col-12 g-2">
+            <legend>Transporte</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <div class="form-control">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" value="" type="checkbox" id="transport" data-options='{"false": "Sin transporte","true": "Con transporte"}'>
+                        <label class="form-check-label" for="transport">Ninguno</label>
+                    </div>
+                </div>
+                <label for="datepicker">
+                    <i class="bi bi-bus-front-fill me-1 text-muted"></i>
+                    ¿Con transporte incluido?
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating d-none transport-related dropdown">
+                <button class="form-control btn border w-100 d-flex" id="zoneDropdown" type="button" data-coreui-toggle="dropdown" aria-expanded="false">
+                    <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
+                </button>
+                <ul class="dropdown-menu w-100" data-target="#zonePickup">
+                    @foreach (LugarPickup item in Model.pickups ?? [])
+                    {
+                        <li><button class="dropdown-item" type="button" data-content="@(item.Descripcion)" data="@(item.ID)">@(item.Descripcion)</button></li>
+                    }
+                </ul>
+                <input type="text" value="" class="d-none" required disabled id="zonePickup">
+                <label for="zonePickup">
+                    <i class="bi bi-geo-alt-fill me-1 text-muted"></i>
+                    Punto de encuentro
+                </label>
+                <div class="invalid-feedback">
+                    Seleccione un punto
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-6 col-lg-3 form-floating d-none transport-related dropdown">
+                <button class="form-control btn border w-100 d-flex" id="timePickupDropdown" type="button" data-coreui-toggle="dropdown" aria-expanded="false" disabled>
+                    <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
+                </button>
+                <ul class="dropdown-menu w-100" id="timePickupDropdownItems" data-target="#timePickup"></ul>
+                <input type="text" value="" class="d-none" id="timePickup" required>
+                <label for="timePickup">
+                    <i class="bi bi-clock-fill me-1 text-muted"></i>
+                    Hora de encuentro
+                </label>
+                <div class="invalid-feedback">
+                    Seleccione una hora
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="row col-12 g-2">
+            <legend>Información del cliente</legend>
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
+                <input id="client" value="" type="text" class="form-control" placeholder=" " required>
+                <label for="client">
+                    <i class="bi bi-person-fill me-1 text-muted"></i>
+                    Nombre
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese el nombre del cliente
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
+                <div class="form-control">
+                    <input value="" type="tel" id="numberPhone" class="p-0" style="border-color: transparent; outline: none; margin-left: 63px !important" placeholder=" ">
+                </div>
+                <label for="number_phone">
+                    <i class="bi bi-telephone-fill me-1 text-muted"></i>
+                    Número de celular
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese el número de celular
+                </div>
+            </div>
+        </fieldset>
+            
+        <fieldset class="row col-12 g-2">
+            <legend>Cantidad de personas</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input id="adultsIn" value="" type="number" class="form-control" placeholder=" " required>
+                <label for="adultsIn" class="w-100">
+                    Adultos
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese la cantidad
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input id="childsIn" value="" type="number" class="form-control" placeholder=" ">
+                <label for="childsIn" class="w-100">
+                    Menores
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese la cantidad
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input id="elderlyIn" value="" type="number" class="form-control" placeholder=" ">
+                <label for="elderlyIn" class="w-100">
+                    3ra Edad (INSEN)
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese la cantidad
+                </div>
+            </div>
+        </fieldset>
+        
+        <div class="row col-12 col-md-9 g-2">
+            <fieldset class="d-none" id="pagement">
+                <legend>Pago</legend>
+                <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                    <button class="form-control btn border w-100 d-flex" type="button" data-coreui-toggle="dropdown" aria-expanded="false">
+                        <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
+                    </button>
+                    <ul class="dropdown-menu w-100" data-target="#method_page">
+                        @foreach (FormaPago item in Model.methodOfPay ?? [])
+                        {
+                            <li><button class="dropdown-item" type="button" data="@(item.Id)">@(item.Descripcion)</button></li>
+                        }
+                    
+                    </ul>
+                    <input type="text" id="method_page" value="" class="d-none" required >
+                    <label for="method_page">
+                            <i class="bi bi-credit-card-2-back-fill me-1 text-muted"></i>
+                            Forma de pago
+                    </label>
+                    <div class="invalid-feedback">
+                            Ingrese la forma
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <fieldset class="row flex-column col-12 col-md-3 g-2 justify-content-end" style="display: none" id="totalCost">
+            <legend>Costo</legend>
+            <div class="w-100 d-flex flex-column gap-2" id="pricesTotal"></div>
+        </fieldset>
+    </div>
+    <div class="card-footer">
+        <input type="submit" value="Crear reservación" class="btn btn-primary float-start"/>
+    </div>
+    <div class="position-absolute w-100 d-none bg-opacity-50 h-100" id="load-panel" style="background: rgb(0 0 0 / 0.5); z-index: 100; transition: all 0.3s ease">
+        <div class="position-relative top-50 start-50 translate-middle d-flex flex-column gap-3 w-50">
+            
+            <div class="d-flex text-white justify-content-start align-items-center gap-3">
+                <div class="spinner-border" role="status" style="transition: all 0.3s ease"></div>
+                <h1 class="display-6" style="transition: all 0.3s ease">Crando reservación...</h1>
+            </div>
+            <div class="w-100 bg-secondary rounded-5" style="height: 5px">
+                <div class="bg-white rounded-5" id="load-bar-panel" style="height: 5px; width: 0%; transition: all 0.3s ease"></div>
+            </div>
+        </div>
+    </div>
+</form>
+@if (TempData["Alert.Title"] != null)
+{
+    var alert = new alertVM(
+        TempData["Alert.Title"]!.ToString()!,
+        TempData["Alert.Message"]!.ToString()!,
+        (AlertType)(int)TempData["Alert.Type"]!
+    );
+
+    <partial name="/Pages/Components/toastAlerts.cshtml" model="alert" />
+}
+
+
+@section ScriptsContent {
+    <script src="~/lib/MCDatepicker-master/dist/mc-calendar.min.js"></script>
+    <script src="~/lib/intl-tel-input/intlTelInput.min.js"></script>
+    <script src="~/js/forms.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/reservations/createReservation.js"></script>
+}

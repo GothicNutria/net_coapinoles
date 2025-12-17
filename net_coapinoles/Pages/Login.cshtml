@@ -1,0 +1,46 @@
+﻿@page
+@model net_coapinoles.Pages.LoginModel
+@attribute [AllowAnonymous]
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+@section Head {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+}
+
+<div class="w-100 vh-100 d-flex justify-content-center align-items-center login-bg">
+    <form method="post" class="card needs-validation" novalidate style="width: 33.33%">
+
+        <h6 class="card-header"> Inicio de sesión</h6>
+        <div class="card-body d-flex flex-column gap-2">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+            <div class="col form-floating">
+                <input type="text" asp-for="User" class="form-control" id="floatUser" placeholder="Usuario" required>
+                <label for="floatUser"> 
+                    <i class="bi bi-person-fill"></i> Nombre de usuario
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese el usuario
+                </div>
+            </div>
+            <div class="col form-floating">
+                <input type="password" asp-for="Password" class="form-control" id="floatPass" placeholder="Contraseña" required>
+                <label for="floatPass">
+                    <i class="bi bi-lock-fill"></i> Contraseña
+                </label>
+                <div class="invalid-feedback">
+                    Ingrese la contraseña
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Iniciar sesión" class="btn btn-secondary float-end"/>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script src="~/js/forms.js" asp-append-version="true"></script>
+}

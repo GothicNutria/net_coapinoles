@@ -1,0 +1,12 @@
+﻿@page "/"
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center position-relative top-50 translate-middle-y">
+    <h1 class="display-3">
+        Bienvenido, @User.Identity.Name
+    </h1>
+    <p>Acceda al sistema y continúe con su proceso aquí.</p>
+</div>
