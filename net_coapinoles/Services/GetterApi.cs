@@ -7,6 +7,10 @@ namespace net_coapinoles.Services {
             await ApiHelper.CallApiAsync<ResReservacion[]>(
                 ApiRoutes.Reservas.Listado, new {id}
             );
+        public static async Task<Cliente[]> GetClients() =>
+            await ApiHelper.CallApiAsync<Cliente[]>(
+                ApiRoutes.Clientes.Listado
+            );
         public static async Task<Hora[]> GetHours() =>
             await ApiHelper.CallApiAsync<Hora[]>(
                 ApiRoutes.Catalogos.Horas, new { Descripcion = "" }

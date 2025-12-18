@@ -1,13 +1,9 @@
-﻿$(function () {
+﻿import { formateTel } from "./components/formatTelephone.js"
+$(function () {
     const forms = $('.needs-validation');
 
     $("input[type='tel']").each(function () {
         const $input = $(this);
-
-        window.intlTelInput(this, {
-            initialCountry: "mx",
-            separateDialCode: true,
-        });
 
         const toggleFloating = () => {
             if ($input.val().length > 0) {
@@ -21,20 +17,9 @@
             if (charCode < 48 || charCode > 57) e.preventDefault();
         });
         $input.on("input", function () {
+            const formatTel = formateTel(this.value) ?? ""
             // Formato de número
-
-            const digits = this.value.replace(/\D/g, '').substring(0, 10);
-            const areaCode = digits.substring(0, 3);
-            const prefix = digits.substring(3, 6);
-            const suffix = digits.substring(6, 10);
-
-            if (digits.length > 6) {
-                this.value = `(${areaCode}) ${prefix}-${suffix}`;
-            } else if (digits.length > 3) {
-                this.value = `(${areaCode}) ${prefix}`;
-            } else if (digits.length > 0) {
-                this.value = `(${areaCode}`;
-            }
+            this.value = formatTel
 
             toggleFloating();
         });

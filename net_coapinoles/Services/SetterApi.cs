@@ -10,5 +10,6 @@ namespace net_coapinoles.Services {
 
         public static async Task<ResReservacion> CreateReserva(ReqReservacion data) =>
             await ApiHelper.CallApiAsync<ResReservacion>(ApiRoutes.Reservas.Agregar, data);
+
     }
 }

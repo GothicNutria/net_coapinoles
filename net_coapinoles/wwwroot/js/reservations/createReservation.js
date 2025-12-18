@@ -2,8 +2,11 @@
 import to12Hour from "../components/to12hour.js"
 import calcPrice from "../calcPrice.js";
 import currencys from "/js/currencys.js";
+import toastAlert from "/js/components/toastAlert.js"
+import { formateTel, completeUnFormated } from "/js/components/formatTelephone.js"
 
 $(() => {
+
     //Pantalla de carga
     const $loadPanel = $("#load-panel")
     const $loadBarPanel = $("#load-bar-panel")
@@ -18,6 +21,20 @@ $(() => {
     const $adults = $("#adultsIn");
     const $childs = $("#childsIn");
     const $elders = $("#elderlyIn");
+    const $client = $("#client")
+    const $tel = $("#numberPhone")
+    const $intTel = $("#internationalNumberPhone")
+
+    const actID = {
+        true: 1,
+        false: 3
+    }
+
+    const iti = window.intlTelInput($tel[0], {
+        initialCountry: "mx",
+        separateDialCode: true,
+        loadUtils: () => import("/lib/intl-tel-input/utils.js"),
+    });
 
     let hasSelectHour = false, hasSelectPickup = false;
     const currentPrices = {}, currentCosts = {MXN: {}, USD: {}}; // { MXN: 123, USD: 5 }
@@ -130,7 +147,7 @@ $(() => {
             const hourspicks = await getHoursPickup(data) || [];
             hourspicks.forEach(h => $("#timePickupDropdownItems").append(`
                 <li>
-                    <button class="dropdown-item" type="button" data-content="${to12Hour(h.hora)}" data="${h.id}">
+                    <button class="dropdown-item" type="button" data-content="${h.hora}" data="${h.id}">
                         ${h.hora}
                     </button>
                 </li>
@@ -163,11 +180,35 @@ $(() => {
         if (target) {
             $(target).data("name", $(this).data("content"))
             $(target).val(val).trigger("change");
-            console.log($(target).data("name"))
         }
         const $container = $(this).closest(".form-floating");
         $container.find(".dropdown-text").text($(this).text());
     });
+
+    $client.on("input", function () {
+        const value = this.value;
+
+        const option = $(`#datalistClients option[value="${value}"]`);
+
+        if (!option.length) return;
+
+        const clientTel = option.attr("label");
+
+
+        iti.setNumber(clientTel);
+
+        if (iti.isValidNumber()) {
+            $tel.val(formateTel(iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL)));
+            $intTel.val(clientTel)
+        }
+    })
+
+    $tel.on("input", function () {
+        const val = completeUnFormated($(this).val())
+        const countryCode = "+" + iti.getSelectedCountryData().dialCode;
+        const internationalTel = countryCode + val
+        $intTel.val(internationalTel)
+    })
 
     $buffet.on("change", () => { setMethodsOfPay(); setPrices(); });
     $timepicker.on("change", () => { hasSelectHour = !!props.timeID(); enableHourPickup(); });
@@ -192,8 +233,10 @@ $(() => {
             $loadPanel.removeClass("d-none")
             $loadBarPanel.addClass("w-25")
             const counts = getCounts();
+            const notes = $("#notes").val().trim()
             const payload = {
-                Fecha: props.formattedDay(),
+                fecha: picker.getFullDate(),
+                HoraTour: Number($timepicker.val() ?? 0),
                 HorarioTour: String($timepicker.data("name") ?? ""),
 
                 Directo: Boolean(!props.haveTransport()),
@@ -202,10 +245,11 @@ $(() => {
                 IdPickup: props.haveTransport() ? Number(props.zoneID()) : null,
                 HoraPickup: props.haveTransport() ? String($("#timePickup").data("name") ?? "") : null,
 
-                Nombre: String($("#client").val() ?? "").trim(),
-                Celular: String(
-                    ($(".iti__selected-dial-code").text() + " " + $("#numberPhone").val())
-                ).trim(),
+                clienteId: Number(
+                    $(`#datalistClients option[value="${$client.val()}"]`).data("id")
+                ) || 0,
+                Nombre: String($client.val() ?? "").trim(),
+                Celular: ($intTel.val().length ?? 0) >= 3 ? ($intTel.val() ?? "") : "",
 
                 Ad: Number(counts.adults ?? 0),
                 Mn: Number(counts.childs ?? 0),
@@ -221,9 +265,15 @@ $(() => {
                 Saldousd: String(currentPrices.USD ?? "0"),
 
                 precioAdulto: currentCosts.MXN.adulto ?? 0,
-                precioMenor: currentCosts.MXN.menor ?? 0
+                precioMenor: currentCosts.MXN.menor ?? 0,
+
+                ActId: actID[props.isBuffet()] ?? 0,
+                TipoCambio: 0,
+
+                Notas: notes.trim() == "" ? null : notes
             };
             console.log(payload)
+            
             const res = await fetch("/System/Reservations/Create", {
                 method: "POST",
                 headers: {
@@ -251,7 +301,12 @@ $(() => {
                     $loadPanel.addClass("d-none");
                     $loadPanel.removeClass("bg-danger");
                     $loadBarPanel.removeClass("w-50");
-                }, 1000);
+
+                    $("#toast-alert").remove()
+                    $("main").append(
+                        toastAlert(data.body.title, data.body.message, data.body.type)
+                    )
+                }, 1500);
             }
         }
     });

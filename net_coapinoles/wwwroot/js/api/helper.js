@@ -13,10 +13,11 @@
 
     const response = await fetch(url, options);
 
+    const text = await response.text();
+
     if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
+        throw new Error(text || response.status);
     }
 
-    return await response.json();
+    return text ? JSON.parse(text) : null;
 }

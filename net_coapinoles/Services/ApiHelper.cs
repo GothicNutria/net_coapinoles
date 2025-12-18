@@ -21,7 +21,6 @@ namespace net_coapinoles.Services {
                 throw new UnauthorizedAccessException("Sin credenciales");
             }
 
-
             using var request = new HttpRequestMessage(new HttpMethod(method), ruta);
 
             if (body != null && (method == "POST" || method == "PATCH")) {

@@ -40,7 +40,7 @@
                 <ul class="dropdown-menu w-100" data-target="#timepicker">
                     @foreach(Hora hour in Model.hours ?? []){
                         <li>
-                            <button class="dropdown-item" type="button" data-content="@(HoursHelper.hourFormat(hour.hora))" data="@(hour.Id)">
+                            <button class="dropdown-item" type="button" data-content="@(hour.hora)" data="@(hour.Id)">
                                 @(HoursHelper.hourFormat(hour.hora))
                             </button>
                         </li>
@@ -126,17 +126,23 @@
         <fieldset class="row col-12 g-2">
             <legend>Información del cliente</legend>
             <div class="col-12 col-md-6 col-lg-4 form-floating">
-                <input id="client" value="" type="text" class="form-control" placeholder=" " required>
+                <input id="client" value="" list="datalistClients"  class="form-control" placeholder=" " required>
+                <datalist id="datalistClients">
+                    @foreach(Cliente client in Model.clients ?? []){
+                        <option label="@(client.Telefono)" data-id="@(client.Id)" value="@(client.Nombre)"/>
+                    }
+                </datalist>
                 <label for="client">
                     <i class="bi bi-person-fill me-1 text-muted"></i>
                     Nombre
                 </label>
                 <div class="invalid-feedback">
-                    Ingrese el nombre del cliente
+                    Elija el cliente
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <div class="form-control">
+                    <input type="hidden" id="internationalNumberPhone"/>
                     <input value="" type="tel" id="numberPhone" class="p-0" style="border-color: transparent; outline: none; margin-left: 63px !important" placeholder=" ">
                 </div>
                 <label for="number_phone">
@@ -180,10 +186,19 @@
             </div>
         </fieldset>
         
-        <div class="row col-12 col-md-9 g-2">
-            <fieldset class="d-none" id="pagement">
+        <div class="row col-12 col-md-9 row g-2">
+            <fieldset class="col-3">
+                <legend>Notas</legend>
+                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
+                    <textarea id="notes" placeholder=" " class="form-control" style="height: 100px"></textarea>
+                    <label for="notes" class="w-100">
+                        Notas adicionales
+                    </label>
+                </div>
+            </fieldset>
+            <fieldset class="d-none col-3" id="pagement">
                 <legend>Pago</legend>
-                <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
                     <button class="form-control btn border w-100 d-flex" type="button" data-coreui-toggle="dropdown" aria-expanded="false">
                         <span class="dropdown-text">Seleccione...</span> <i class="bi bi-caret-down-fill ms-auto text-muted"></i>
                     </button>
@@ -228,19 +243,25 @@
 </form>
 @if (TempData["Alert.Title"] != null)
 {
-    var alert = new alertVM(
-        TempData["Alert.Title"]!.ToString()!,
-        TempData["Alert.Message"]!.ToString()!,
-        (AlertType)(int)TempData["Alert.Type"]!
-    );
+    var inicio = (DateTime)TempData["Alert.Time"];
+    var diff = DateTime.Now - inicio;
 
-    <partial name="/Pages/Components/toastAlerts.cshtml" model="alert" />
+    if (diff.TotalSeconds <= 30){
+        var alert = new alertVM(
+            TempData["Alert.Title"]!.ToString()!,
+            TempData["Alert.Message"]!.ToString()!,
+            (AlertType)(int)TempData["Alert.Type"]!
+        );
+
+        <partial name="/Pages/Components/toastAlerts.cshtml" model="alert" />
+    }
+
 }
 
 
 @section ScriptsContent {
     <script src="~/lib/MCDatepicker-master/dist/mc-calendar.min.js"></script>
     <script src="~/lib/intl-tel-input/intlTelInput.min.js"></script>
-    <script src="~/js/forms.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/forms.js" asp-append-version="true"></script>
     <script type="module" src="~/js/reservations/createReservation.js"></script>
 }

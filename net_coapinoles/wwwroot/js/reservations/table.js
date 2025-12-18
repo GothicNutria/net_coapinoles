@@ -93,7 +93,7 @@ $(async function () {
                         top-50
                         start-50
                         translate-middle
-                        ${v ? "bi-check-square-fill" : "bi-check-square"}
+                        ${!v ? "bi-check-square-fill" : "bi-check-square"}
                     ">
                     </i>
                 `, orderable: false

@@ -65,3 +65,14 @@ body {
         margin-left: 65px !important;
     }
 }
+@media(min-width: 576px) {
+    .dropdown-menu {
+        opacity: 0;
+        transition: all 0.3s
+    }
+
+    .dropdown-menu.show {
+        margin-top: 0;
+        opacity: 1;
+    }
+}

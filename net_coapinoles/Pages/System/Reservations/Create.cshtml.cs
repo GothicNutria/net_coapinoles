@@ -9,59 +9,45 @@ using net_coapinoles.Resources.Enums;
 namespace net_coapinoles.Pages.System.Reservations
 {
     public class CreateModel : PageModel {
-        //public class CostType {
-        //    public decimal adulto { get; set; }
-        //    public decimal menor { get; set; }
-        //    public string moneda { get; set; }
-        //}
-        ////Datos de la reserva
-        //[BindProperty] public string date_reserve { get; set; }
-        //[BindProperty] public string hour_reserve { get; set; }
-        //[BindProperty] public string type_reserve { get; set; }
-        ////Transporte
-        //[BindProperty] public bool transport { get; set; }
-        //[BindProperty] public string zone_pickup { get; set; }
-        //[BindProperty] public string hour_pickup { get; set; }
-        //// Datos personales
-        //[BindProperty] public string client_name { get; set; }
-        //[BindProperty] public string number_phone { get; set; }
-        ////Número de personas
-        //[BindProperty] public int adults_count { get; set; }
-        //[BindProperty] public int child_count { get; set; }
-        //[BindProperty] public int elderly_count { get; set; }
-        ////Forma de pago
-        ////[BindProperty] public int method_pay_id { get; set; }
-        ////[BindProperty] public Dictionary<string, decimal> prices { get; set; }
-        ////[BindProperty] public Dictionary<string, CostType> costs { get; set; }
-
-
-        public async Task<IActionResult> OnPostAsync([FromBody] ReqReservacion res) {
+        public async Task<IActionResult> OnPostAsync([FromBody] ReqReservacion data) {
             string urlCreate = "/System/Reservations/Create";
 
-            if ((res.Ad + res.Insen + res.Mn) <= 0) {
+            if ((data.Ad + data.Insen + data.Mn) <= 0) {
                 return new JsonResult(new {
                     ok = false,
-                    redirect = new alertVM(
-                        "No es posible crear la reserva", "" +
+                    body = new alertVM(
+                        "No es posible crear la reserva",
                         "No se puede crear una reserva sin pasajeros.",
                         AlertType.Error
                     )
                 });
             }
-            if (res.Mn > 0 && (res.Ad + res.Insen) <= 0) {
+            if (data.Mn > 0 && (data.Ad + data.Insen) <= 0) {
                 return new JsonResult(new {
                     ok = false,
-                    redirect = new alertVM(
-                        "No es posible crear la reserva", "" +
+                    body = new alertVM(
+                        "No es posible crear la reserva",
                         "No se puede crear una reserva en la que solo viajen menores.",
                         AlertType.Error
                     )
                 });
             }
-
+            ResReservacion res = await SetterApi.CreateReserva(data);
+            if (!res.exitoso) {
+                return new JsonResult(new {
+                    ok = false,
+                    body = new alertVM(
+                        "No es posible crear la reserva",
+                        res.mensaje,
+                        AlertType.Error
+                    )
+                });
+            }
             TempData["Alert.Title"] = "Reserva exitosa";
-            TempData["Alert.Message"] = "Se realizó correctamente la reservación";
+            TempData["Alert.Message"] = $"Se realizó correctamente la reservación.\nConfirmación {res.confirmacion}";
             TempData["Alert.Type"] = (int)AlertType.Success;
+            TempData["Alert.Time"] = DateTime.Now;
+
 
             return new JsonResult(new {
                 ok = true,
@@ -73,12 +59,14 @@ namespace net_coapinoles.Pages.System.Reservations
         public Hora[] hours { get; set; }
         public LugarPickup[] pickups { get; set; }
         public FormaPago[] methodOfPay { get; set; }
+        public Cliente[] clients { get; set; }
         public Task OnGet() => LoadFormDataAsync();
 
         private async Task LoadFormDataAsync() {
             hours = await HoursHelper.getHoursBusiness();
             pickups = await GetterApi.GetPickups();
             methodOfPay = await GetterApi.GetMethodsOfPay();
+            clients = await GetterApi.GetClients();
         }
 
     }
