@@ -5,6 +5,7 @@
         get Precios() { return APIURL + "api/Catalogos/ObtenerPrecios" }
     },
     reservas: {
+        get Whatsapp() { return APIURL + "api/Reservas/ReenviarWhatsapp/" },
         get Listado() { return APIURL + "api/Reservas/GetReservation" }
     },
     moneda: {

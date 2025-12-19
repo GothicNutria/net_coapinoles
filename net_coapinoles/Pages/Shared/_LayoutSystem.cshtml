@@ -69,7 +69,7 @@
         </div>
         <ul class="sidebar-nav">
             <li class="nav-title sidebar-text">Gestión del sistema</li>
-            @foreach (dynamic item in menuItems) {
+            @foreach (dynamic item in menuItems ?? []) {
                 var prop = item.GetType().GetProperty("subpages");
                 bool hasSubpages = prop != null;
 
@@ -146,6 +146,11 @@
     <!-- Contenido principal -->
     <main class="col h-100 p-5 overflow-y-auto" style="background: rgb(0 0 0 / 0.05)">
         @RenderBody()
+        <div aria-live="polite" aria-atomic="true">
+            <div class="toast-container bottom-0 end-0 p-3">
+                @RenderSection("Notifys", required: false)
+            </div>
+        </div>
     </main>
 
 </div>

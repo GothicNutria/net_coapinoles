@@ -70,8 +70,8 @@ $(() => {
     };
 
     const computeCostForGroup = (group) => {
-        const transport = group.find(p => p.actid == 4) ?? null;
-        const buffet = group.find(p => p.actid != 4) ?? null;
+        const transport = group.find(p => p.actid == 5) ?? null;
+        const buffet = group.find(p => p.actid != 5) ?? null;
         let cost = { adulto: 0, menor: 0, moneda: null };
 
         if (!props.isBuffet() && props.haveTransport() && transport) {
@@ -127,6 +127,7 @@ $(() => {
     const setPrices = async () => {
         try {
             const prices = await getCosts(props.formattedDay());
+            console.log(prices)
             const groups = Object.values((prices || []).reduce((acc, obj) => { (acc[obj.moneda] ??= []).push(obj); return acc; }, {}));
             renderPrices(groups);
         } catch (err) {
@@ -270,6 +271,8 @@ $(() => {
                 ActId: actID[props.isBuffet()] ?? 0,
                 TipoCambio: 0,
 
+
+                Act: 0,
                 Notas: notes.trim() == "" ? null : notes
             };
             console.log(payload)
@@ -303,9 +306,7 @@ $(() => {
                     $loadBarPanel.removeClass("w-50");
 
                     $("#toast-alert").remove()
-                    $("main").append(
-                        toastAlert(data.body.title, data.body.message, data.body.type)
-                    )
+                    toastAlert(data.body.title, data.body.message, data.body.type)
                 }, 1500);
             }
         }

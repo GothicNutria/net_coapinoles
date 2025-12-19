@@ -1,4 +1,5 @@
 ﻿import { getReservations } from '../api/getters.js'
+import "/js/reservations/Modal.js"
 
 $(async function () {
     const data = await getReservations();
@@ -11,7 +12,7 @@ $(async function () {
                 render: (rowData) => `
                     <div class="dropdown">
                         <button
-                            class="btn border-0"
+                            class="btn border-0 p-0"
                             type="button"
                             id="reserve-${rowData.Id}"
                             data-coreui-toggle="dropdown"
@@ -21,9 +22,9 @@ $(async function () {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="reserve-${rowData.Id}">
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <button class="dropdown-item">
                                     <i class="bi bi-eye-fill text-dark rounded-2 border me-2 p-1 bi-aspect-ratio"></i> Ver resrevación
-                                </a>
+                                </button>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="#">
@@ -46,9 +47,9 @@ $(async function () {
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <button class="dropdown-item sendToWhatsapp" data-id="${rowData.Id}" data-coreui-target="#modalServices">
                                     <i class="bi bi-whatsapp text-white rounded-2 me-2 p-1 bi-aspect-ratio" style="background: #25d366"></i> Reenviar a WhatsApp
-                                </a>
+                                </button>
                             </li>
                         </ul>
                     </div>

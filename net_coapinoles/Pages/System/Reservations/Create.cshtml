@@ -252,8 +252,9 @@
             TempData["Alert.Message"]!.ToString()!,
             (AlertType)(int)TempData["Alert.Type"]!
         );
-
-        <partial name="/Pages/Components/toastAlerts.cshtml" model="alert" />
+        @section Notifys {
+            <partial name="/Pages/Shared/Components/ToastAlert.cshtml" model="alert" />
+        }
     }
 
 }

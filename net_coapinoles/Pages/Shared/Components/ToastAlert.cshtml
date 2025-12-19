@@ -1,4 +1,4 @@
-﻿@model dynamic
+﻿@model net_coapinoles.Models.alertVM
 @using net_coapinoles.Resources.Enums;
 @{
     string type = Model.Type switch {
@@ -15,7 +15,10 @@
     };
 
 }
-<div class="toast position-absolute end-0 bottom-0 translate-middle-y me-5 border-@(type) show" role="alert" aria-live="assertive" aria-atomic="true">
+@{
+    Layout = null;
+}
+<div class="toast border-@(type) show" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <i class="bi @icon text-@(type) me-2"></i>
 
