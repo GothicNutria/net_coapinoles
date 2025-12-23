@@ -3,16 +3,20 @@
 @using net_coapinoles.Models.DTO
 @using net_coapinoles.Resources.Enums
 @using net_coapinoles.Services.Models
-@model net_coapinoles.Pages.System.Reservations.CreateModel
+@model net_coapinoles.Pages.System.Reservations.UpdateModel
 @section HeadContent {
     <link rel="stylesheet" href="~/lib/MCDatepicker-master/dist/mc-calendar.min.css" />
     <link rel="stylesheet" href="~/lib/intl-tel-input/intlTelInput.css" />
+    <script>
+        const id = @Model.id
+    </script>
+
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb ">
         <li class="breadcrumb-item" aria-current="page">Sistema</li>
         <li class="breadcrumb-item" aria-current="page"><a href="../" class="text-decoration-none">Reservaciones</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Nueva reservación</li>
+        <li class="breadcrumb-item active" aria-current="page">Editar reserva <span class="breadcrumb-page"></span> </li>
     </ol>
 </nav>
 <form method="post" class="card needs-validation" novalidate>
@@ -231,5 +235,5 @@
 @section ScriptsContent {
     <script src="~/lib/MCDatepicker-master/dist/mc-calendar.min.js"></script>
     <script src="~/lib/intl-tel-input/intlTelInput.min.js"></script>
-    <script type="module" src="~/js/reservations/createReservation.js"></script>
+    <script type="module" src="~/js/reservations/updateReservation.js"></script>
 }

@@ -10,6 +10,11 @@ import initForm from "/js/forms.js"
 
 $(() => {
     //Pantalla de carga 
+    const loadScreen = loadScreenClass({
+        title: "Preparando reservación ",
+        success: "Se creó exitosamente la reservación: ",
+        error: "Error al crear la reservación."
+    })
 
     /* selectors */
     const $checkTransport = $("#transport");
@@ -212,11 +217,6 @@ $(() => {
 
     [$adults, $childs, $elders].forEach($el => $el.on("input", setPrices));
 
-    const loadScreen = loadScreenClass({
-        title: "Preparando reservación ",
-        success: "Se creó exitosamente la reservación: ",
-        error: "Error al crear la reservación."
-    })
 
     $(document).on('form:valid', '.needs-validation', async function (e) {
 

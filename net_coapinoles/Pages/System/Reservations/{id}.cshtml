@@ -12,21 +12,21 @@
     <div class="card-body row g-1">
         <fieldset class="row col-12 g-2">
             <legend>Información de la reservación</legend>
-            <div class="col-12 col-md-6 col-lg-3 form-floating">
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <input class="form-control" value="@Model.fecha" readonly placeholder=" " />
                 <label >
                     <i class="bi bi-calendar2-range-fill me-1 text-muted"></i>
                     Fecha de la reserva
                 </label>
             </div>
-            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+            <div class="col-12 col-md-6 col-lg-4 form-floating dropdown">
                 <input class="form-control" value="@Model.hora" readonly placeholder=" " />
                 <label>
                     <i class="bi bi-alarm-fill me-1 text-muted"></i>
                     Hora de reserva
                 </label>
             </div>
-            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+            <div class="col-12 col-md-6 col-lg-4 form-floating dropdown">
                 <input class="form-control" value="@Model.tipo_reserva" readonly placeholder=" " />
                 <label>
                     <i class="bi bi-hash me-1 text-muted"></i>
@@ -36,7 +36,7 @@
         </fieldset>
         <fieldset class="row col-12 g-2">
             <legend>Transporte</legend>
-            <div class="col-12 col-md-6 col-lg-3 form-floating">
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <div class="form-control">
                     <div class="form-check form-switch">
                         <input class="form-check-input" @(Model.transport == true ? "checked" : "") type="checkbox" readonly>
@@ -50,7 +50,7 @@
                     ¿Con transporte incluido?
                 </label>
             </div>
-            <div class="col-12 col-md-6 col-lg-3 form-floating @(Model.transport == true ? "" : "d-none")  transport-related dropdown">
+            <div class="col-12 col-md-6 col-lg-4 form-floating @(Model.transport == true ? "" : "d-none")  transport-related dropdown">
                 <input class="form-control" readonly placeholder=" " />
                 <label>
                     <i class="bi bi-geo-alt-fill me-1 text-muted"></i>
@@ -58,7 +58,7 @@
                 </label>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-3 form-floating @(Model.transport == true ? "" : "d-none") transport-related dropdown">
+            <div class="col-12 col-md-6 col-lg-4 form-floating @(Model.transport == true ? "" : "d-none") transport-related dropdown">
                 <input class="form-control" readonly placeholder=" " />
                 <label>
                     <i class="bi bi-clock-fill me-1 text-muted"></i>
@@ -86,19 +86,19 @@
 
         <fieldset class="row col-12 g-2">
             <legend>Cantidad de personas</legend>
-            <div class="col-12 col-md-6 col-lg-3 form-floating">
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <input class="form-control" value="@(Model.ad)" readonly placeholder=" " />
                 <label class="w-100">
                     Adultos
                 </label>
             </div>
-            <div class="col-12 col-md-6 col-lg-3 form-floating">
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <input class="form-control" value="@(Model.mn)" readonly placeholder=" " />
                 <label class="w-100">
                     Menores
                 </label>
             </div>
-            <div class="col-12 col-md-6 col-lg-3 form-floating">
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
                 <input class="form-control" value="@(Model.insen)" readonly placeholder=" " />
                 <label class="w-100">
                     3ra Edad (INSEN)
@@ -106,28 +106,32 @@
             </div>
         </fieldset>
 
-        <div class="row col-12 col-md-9 row g-2">
-            <fieldset class="col-5">
+        <div class="row col-12 col-md-8 row g-2">
+            <fieldset class="col-6">
                 <legend>Notas</legend>
-                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
+                <div class="col form-floating dropdown">
                     <textarea class="form-control" style="height: 100px" readonly>@(Model.notes)</textarea>
                     <label class="w-100">
                         Notas adicionales
                     </label>
                 </div>
             </fieldset>
-            <fieldset class="d-none col-3" id="pagement">
-                <legend>Pago</legend>
-                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
-                    <input class="form-control" value="@Model.method_pay" readonly placeholder=" " />
-                    <label for="method_page">
-                        <i class="bi bi-credit-card-2-back-fill me-1 text-muted"></i>
-                        Forma de pago
-                    </label>
-                </div>
-            </fieldset>
+            @if (Model.method_pay != null){
+                <fieldset class="col-6">
+                    <legend>Pago</legend>
+                    <div class="col form-floating dropdown">
+                        <input class="form-control" value="@Model.method_pay" readonly placeholder=" " />
+                        <label for="method_page">
+                            <i class="bi bi-credit-card-2-back-fill me-1 text-muted"></i>
+                            Forma de pago
+                        </label>
+                    </div>
+                </fieldset>
+            }
         </div>
-        <fieldset class="row flex-column col-12 col-md-3 g-2 justify-content-end" style="display: none" id="totalCost">
+        @if (Model.priceMXN > 0 || Model.priceUSD > 0)
+        {
+        <fieldset class="col-12 col-md-4">
             <legend>Costo</legend>
             <div class="w-100 d-flex flex-column gap-2">
                 <div class="col form-floating">
@@ -144,5 +148,6 @@
                 </div>
             </div>
         </fieldset>
+        }
     </div>
 </div>

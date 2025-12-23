@@ -44,7 +44,7 @@ $(async function () {
                             </li>
                             ${(rowData.Hora != "directo" ? `
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="/System/Reservations/Update/${rowData.Id}">
                                         <i class="bi bi-pencil-fill text-white rounded-2 me-2 p-1 bi-aspect-ratio" style="background: #FFB426"></i> Editar reservación
                                     </a>
                                 </li>
