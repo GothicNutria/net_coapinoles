@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("Head", required: false)
 </head>
-<body>
+<body class="d-flex vh-100">
     @RenderBody()
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -10,8 +10,6 @@ namespace net_coapinoles.Pages.System.Reservations
 {
     public class CreateModel : PageModel {
         public async Task<IActionResult> OnPostAsync([FromBody] ReqReservacion data) {
-            string urlCreate = "/System/Reservations/Create";
-
             if ((data.Ad + data.Insen + data.Mn) <= 0) {
                 return new JsonResult(new {
                     ok = false,
@@ -51,7 +49,7 @@ namespace net_coapinoles.Pages.System.Reservations
 
             return new JsonResult(new {
                 ok = true,
-                redirect = Url.Page(urlCreate)
+                redirect = Url.Content("~/System/Reservations/Create")
             });
         }
 

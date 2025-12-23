@@ -40,6 +40,7 @@
             public static string Editar => APIURL + "api/Reservas/Actualizar";
             public static string Cancelar => APIURL + "api/Reservas/cancelarReservaByID?reservaID=";
             public static string AddPasajeros => APIURL + "api/Reservas/AddPasajeros";
+            public static string GetDetails => APIURL + "api/ReservasDetalles/getDetailsByID?=";
         }
 
         public static class Reportes {

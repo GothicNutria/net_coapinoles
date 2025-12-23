@@ -78,3 +78,39 @@ public class ResReservacion {
     public bool exitoso { get; set; }
     public string mensaje { get; set; }
 }
+public class ResReservaciones {
+    public int? Id { get; set; }
+    public DateTime? FechaRegistrada { get; set; }
+    public DateTime? Fecha { get; set; }
+    public int UsuarioId { get; set; }
+    public int ActId { get; set; }
+    public string Usuario { get; set; }
+    public string Hora { get; set; }
+    public string Lugarpickup { get; set; }
+    public string Horapickup { get; set; }
+    public string Cliente { get; set; }
+    public string FormaPago { get; set; }
+    public int FormaPagoId { get; set; }
+    public int clienteId { get; set; }
+    public string Celular { get; set; }
+    public string Confirmacion { get; set; }
+    public int? Adultos { get; set; }
+    public int? AdultosConfim { get; set; }
+    public int? Menores { get; set; }
+    public int? MenoresConfim { get; set; }
+    public int? Insen { get; set; }
+    public int? InsenConfim { get; set; }
+    public int act { get; set; } = 0;
+    public int actconfirm { get; set; } = 0;
+    public bool? Transporte { get; set; }
+    public string Notas { get; set; }
+    public int? pickId { get; set; }
+    public int? HoraTour { get; set; }
+    public decimal total { get; set; }
+    public decimal totalUsd { get; set; }
+    public decimal tipoCambio { get; set; }
+    public decimal saldo { get; set; }
+    public decimal Saldousd { get; set; }
+    public string moneda { get; set; }
+    public List<ReqPagos> pagos { get; set; }
+}

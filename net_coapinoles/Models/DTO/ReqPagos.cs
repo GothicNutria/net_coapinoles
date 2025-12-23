@@ -6,7 +6,7 @@ public class ReqPagos {
     public string FechaReg { get; set; }
     public string Fechapago { get; set; }
     public int Formaid { get; set; }
-    public double Total { get; set; }
+    public decimal Total { get; set; }
     public int MonedaId { get; set; }
     public string Referencia { get; set; }
     public string Notas { get; set; }

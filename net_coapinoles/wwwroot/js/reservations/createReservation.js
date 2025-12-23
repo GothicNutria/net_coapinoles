@@ -1,15 +1,15 @@
 ﻿import { getHoursPickup, getCosts } from "../api/getters.js";
-import to12Hour from "../components/to12hour.js"
 import calcPrice from "../calcPrice.js";
 import currencys from "/js/currencys.js";
 import toastAlert from "/js/components/toastAlert.js"
 import { formateTel, completeUnFormated } from "/js/components/formatTelephone.js"
+import loadScreenClass from "/js/components/loadScreen.js"
+import to12hour from "/js/components/to12hour.js"
+
+import initForm from "/js/forms.js"
 
 $(() => {
-
-    //Pantalla de carga
-    const $loadPanel = $("#load-panel")
-    const $loadBarPanel = $("#load-bar-panel")
+    //Pantalla de carga 
 
     /* selectors */
     const $checkTransport = $("#transport");
@@ -44,6 +44,7 @@ $(() => {
         el: '#datepicker',
         minDate: new Date(),
         selectedDate: new Date(),
+        dateFormat: "YYYY-MM-DD",
         customClearBTN: "Limpiar",
         customOkBTN: "Aceptar",
         customCancelBTN: "Cancelar",
@@ -126,7 +127,7 @@ $(() => {
     //Carga precios
     const setPrices = async () => {
         try {
-            const prices = await getCosts(props.formattedDay());
+            const prices = await getCosts(picker.getFormatedDate())
             console.log(prices)
             const groups = Object.values((prices || []).reduce((acc, obj) => { (acc[obj.moneda] ??= []).push(obj); return acc; }, {}));
             renderPrices(groups);
@@ -149,7 +150,7 @@ $(() => {
             hourspicks.forEach(h => $("#timePickupDropdownItems").append(`
                 <li>
                     <button class="dropdown-item" type="button" data-content="${h.hora}" data="${h.id}">
-                        ${h.hora}
+                        ${to12hour(h.hora)}
                     </button>
                 </li>
             `));
@@ -171,21 +172,6 @@ $(() => {
         }
     };
 
-
-    //Selector dinámico con dropdown
-    $(document).on("click", ".dropdown-item", function (e) {
-        e.preventDefault();
-        const val = $(this).attr("data");
-        const menu = $(this).closest(".dropdown-menu");
-        const target = menu.data("target");
-        if (target) {
-            $(target).data("name", $(this).data("content"))
-            $(target).val(val).trigger("change");
-        }
-        const $container = $(this).closest(".form-floating");
-        $container.find(".dropdown-text").text($(this).text());
-    });
-
     $client.on("input", function () {
         const value = this.value;
 
@@ -195,11 +181,12 @@ $(() => {
 
         const clientTel = option.attr("label");
 
-
         iti.setNumber(clientTel);
 
         if (iti.isValidNumber()) {
-            $tel.val(formateTel(iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL)));
+            const number = formateTel(iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL))
+            console.log(number)
+            $tel.val(number);
             $intTel.val(clientTel)
         }
     })
@@ -225,94 +212,83 @@ $(() => {
 
     [$adults, $childs, $elders].forEach($el => $el.on("input", setPrices));
 
-    $(".needs-validation").on("submit", async function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const form = this;
+    const loadScreen = loadScreenClass({
+        title: "Preparando reservación ",
+        success: "Se creó exitosamente la reservación: ",
+        error: "Error al crear la reservación."
+    })
 
-        if (form.checkValidity()) {
-            $loadPanel.removeClass("d-none")
-            $loadBarPanel.addClass("w-25")
-            const counts = getCounts();
-            const notes = $("#notes").val().trim()
-            const payload = {
-                fecha: picker.getFullDate(),
-                HoraTour: Number($timepicker.val() ?? 0),
-                HorarioTour: String($timepicker.data("name") ?? ""),
+    $(document).on('form:valid', '.needs-validation', async function (e) {
 
-                Directo: Boolean(!props.haveTransport()),
+        loadScreen.show()
 
-                LugarPickup: props.haveTransport() ? String(props.zoneName() ?? "") : null,
-                IdPickup: props.haveTransport() ? Number(props.zoneID()) : null,
-                HoraPickup: props.haveTransport() ? String($("#timePickup").data("name") ?? "") : null,
+        const counts = getCounts();
+        const notes = $("#notes").val().trim()
+        const payload = {
+            fecha: picker.getFullDate(),
+            HoraTour: Number($timepicker.val() ?? 0),
+            HorarioTour: String($timepicker.data("name") ?? ""),
 
-                clienteId: Number(
-                    $(`#datalistClients option[value="${$client.val()}"]`).data("id")
-                ) || 0,
-                Nombre: String($client.val() ?? "").trim(),
-                Celular: ($intTel.val().length ?? 0) >= 3 ? ($intTel.val() ?? "") : "",
+            Directo: Boolean(!props.haveTransport()),
 
-                Ad: Number(counts.adults ?? 0),
-                Mn: Number(counts.childs ?? 0),
-                Insen: Number(counts.elders ?? 0),
+            LugarPickup: props.haveTransport() ? String(props.zoneName() ?? "") : null,
+            IdPickup: props.haveTransport() ? Number(props.zoneID()) : null,
+            HoraPickup: props.haveTransport() ? String($("#timePickup").data("name") ?? "") : null,
 
-                FormaPago: $("#method_page").val()
-                    ? Number($("#method_page").val())
-                    : null,
+            clienteId: Number(
+                $(`#datalistClients option[value="${$client.val()}"]`).data("id")
+            ) || 0,
+            Nombre: String($client.val() ?? "").trim(),
+            Celular: ($intTel.val().length ?? 0) >= 3 ? ($intTel.val() ?? "") : "",
 
-                Total: String(currentPrices.MXN ?? "0"),
-                Saldo: String(currentPrices.MXN ?? "0"),
-                Totalusd: String(currentPrices.USD ?? "0"),
-                Saldousd: String(currentPrices.USD ?? "0"),
+            Ad: Number(counts.adults ?? 0),
+            Mn: Number(counts.childs ?? 0),
+            Insen: Number(counts.elders ?? 0),
 
-                precioAdulto: currentCosts.MXN.adulto ?? 0,
-                precioMenor: currentCosts.MXN.menor ?? 0,
+            FormaPago: $("#method_page").val()
+                ? Number($("#method_page").val())
+                : null,
 
-                ActId: actID[props.isBuffet()] ?? 0,
-                TipoCambio: 0,
+            Total: String(currentPrices.MXN ?? "0"),
+            Saldo: String(currentPrices.MXN ?? "0"),
+            Totalusd: String(currentPrices.USD ?? "0"),
+            Saldousd: String(currentPrices.USD ?? "0"),
+
+            precioAdulto: currentCosts.MXN.adulto ?? 0,
+            precioMenor: currentCosts.MXN.menor ?? 0,
+
+            ActId: actID[props.isBuffet()] ?? 0,
+            TipoCambio: 0,
 
 
-                Act: 0,
-                Notas: notes.trim() == "" ? null : notes
-            };
-            console.log(payload)
-            
-            const res = await fetch("/System/Reservations/Create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": document.querySelector(
-                        'input[name="__RequestVerificationToken"]'
-                    ).value
-                },
-                body: JSON.stringify(payload)
-            })
+            Act: 0,
+            Notas: notes.trim() == "" ? null : notes
+        };
+        const res = await fetch("/System/Reservations/Create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": document.querySelector(
+                    'input[name="__RequestVerificationToken"]'
+                ).value
+            },
+            body: JSON.stringify(payload)
+        })
 
-            const data = await res.json();
+        const data = await res.json();
 
-            if (data.ok && data.redirect) {
-                $loadPanel.addClass("bg-success")
-                $loadBarPanel.addClass("w-100")
-                location.href = data.redirect;
-            } else {
+        console.log(data)
 
-                $loadPanel.addClass("bg-danger");
-
-                $loadBarPanel.addClass("w-50").removeClass("w-25")
-
-                setTimeout(() => {
-                    $loadPanel.addClass("d-none");
-                    $loadPanel.removeClass("bg-danger");
-                    $loadBarPanel.removeClass("w-50");
-
-                    $("#toast-alert").remove()
-                    toastAlert(data.body.title, data.body.message, data.body.type)
-                }, 1500);
-            }
+        if (data.ok && data.redirect) {
+            await loadScreen.setProgress(100)
+            location.href = data.redirect;
+        } else {
+            await loadScreen.onError()
+            toastAlert(data.body.title, data.body.message, data.body.type)
         }
     });
 
-    /* init */
+    initForm()
     setMethodsOfPay();
     setPrices();
     enableHourPickup();

@@ -1,5 +1,5 @@
 ﻿using net_coapinoles.Models.DTO;
-using System;
+using System.Globalization;
 
 namespace net_coapinoles.Services.Models {
     public static class HoursHelper {
@@ -14,14 +14,12 @@ namespace net_coapinoles.Services.Models {
             ).ToArray();
 
         public static string hourFormat(string hour) {
+            var t = DateTime.ParseExact(hour, "HH:mm", CultureInfo.InvariantCulture);
 
-            var t = DateTime.ParseExact(hour, "HH:mm", null);
-            string formatted = t.ToString("h:mm tt");
-
-            if (formatted.Contains(":00"))
-                formatted = formatted.Replace(":00", "");
-
-            return formatted;
+            return t.Minute == 0
+                ? t.ToString("h tt", CultureInfo.InvariantCulture)
+                : t.ToString("h:mm tt", CultureInfo.InvariantCulture);
         }
+
     }
 }

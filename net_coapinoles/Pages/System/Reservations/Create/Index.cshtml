@@ -4,21 +4,18 @@
 @using net_coapinoles.Resources.Enums
 @using net_coapinoles.Services.Models
 @model net_coapinoles.Pages.System.Reservations.CreateModel
-@{
-}
 @section HeadContent {
     <link rel="stylesheet" href="~/lib/MCDatepicker-master/dist/mc-calendar.min.css" />
     <link rel="stylesheet" href="~/lib/intl-tel-input/intlTelInput.css" />
-    <link rel="stylesheet" href="~/css/create.css" />
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb ">
         <li class="breadcrumb-item" aria-current="page">Sistema</li>
-        <li class="breadcrumb-item" aria-current="page"><a href="./" class="text-decoration-none">Reservaciones</a></li>
+        <li class="breadcrumb-item" aria-current="page"><a href="../" class="text-decoration-none">Reservaciones</a></li>
         <li class="breadcrumb-item active" aria-current="page">Nueva reservación</li>
     </ol>
 </nav>
-<form method="post" class="card needs-validation position-relative" novalidate>
+<form method="post" class="card needs-validation" novalidate>
     <h6 class="card-header">Nueva reservación</h6>
     <div class="card-body row g-1">
         <fieldset class="row col-12 g-2">
@@ -187,7 +184,7 @@
         </fieldset>
         
         <div class="row col-12 col-md-9 row g-2">
-            <fieldset class="col-3">
+            <fieldset class="col-5">
                 <legend>Notas</legend>
                 <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
                     <textarea id="notes" placeholder=" " class="form-control" style="height: 100px"></textarea>
@@ -228,41 +225,11 @@
     <div class="card-footer">
         <input type="submit" value="Crear reservación" class="btn btn-primary float-start"/>
     </div>
-    <div class="position-absolute w-100 d-none bg-opacity-50 h-100" id="load-panel" style="background: rgb(0 0 0 / 0.5); z-index: 100; transition: all 0.3s ease">
-        <div class="position-relative top-50 start-50 translate-middle d-flex flex-column gap-3 w-50">
-            
-            <div class="d-flex text-white justify-content-start align-items-center gap-3">
-                <div class="spinner-border" role="status" style="transition: all 0.3s ease"></div>
-                <h1 class="display-6" style="transition: all 0.3s ease">Crando reservación...</h1>
-            </div>
-            <div class="w-100 bg-secondary rounded-5" style="height: 5px">
-                <div class="bg-white rounded-5" id="load-bar-panel" style="height: 5px; width: 0%; transition: all 0.3s ease"></div>
-            </div>
-        </div>
-    </div>
 </form>
-@if (TempData["Alert.Title"] != null)
-{
-    var inicio = (DateTime)TempData["Alert.Time"];
-    var diff = DateTime.Now - inicio;
-
-    if (diff.TotalSeconds <= 30){
-        var alert = new alertVM(
-            TempData["Alert.Title"]!.ToString()!,
-            TempData["Alert.Message"]!.ToString()!,
-            (AlertType)(int)TempData["Alert.Type"]!
-        );
-        @section Notifys {
-            <partial name="/Pages/Shared/Components/ToastAlert.cshtml" model="alert" />
-        }
-    }
-
-}
-
+<partial name="/Pages/Shared/Components/loadScreen.cshtml"/>
 
 @section ScriptsContent {
     <script src="~/lib/MCDatepicker-master/dist/mc-calendar.min.js"></script>
     <script src="~/lib/intl-tel-input/intlTelInput.min.js"></script>
-    <script type="module" src="~/js/forms.js" asp-append-version="true"></script>
     <script type="module" src="~/js/reservations/createReservation.js"></script>
 }

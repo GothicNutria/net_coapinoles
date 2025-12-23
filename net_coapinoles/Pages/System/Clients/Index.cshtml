@@ -1,0 +1,31 @@
+﻿@page
+@model net_coapinoles.Pages.System.Clients.IndexModel
+@{
+}
+@section HeadContent {
+    <link rel="stylesheet" href="~/lib/data-table/datatables.min.css" />
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb ">
+        <li class="breadcrumb-item" aria-current="page">Sistema</li>
+        <li class="breadcrumb-item active" aria-current="page">Clientes</li>
+    </ol>
+</nav>
+
+<div class="row g-3">
+    <div class="col-12">
+        <partial name="/Pages/Shared/Components/Table.cshtml" model='new string[]{
+            "Nombre",
+            "Teléfono",
+            "Correo",
+            "Acciones",
+        }' />
+    </div>
+</div>
+<div class="modal fade" id="modalServices" tabindex="-1">
+    <div class="modal-dialog modal-content"></div>
+</div>
+<partial name="/Pages/Shared/Components/loadScreen.cshtml" />
+@section ScriptsContent {
+    <script type="module" src="~/js/clients/page.js"></script>
+}

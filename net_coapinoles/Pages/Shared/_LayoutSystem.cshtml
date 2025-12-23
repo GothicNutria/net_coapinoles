@@ -1,4 +1,6 @@
 ﻿@using Services
+@using net_coapinoles.Models
+@using net_coapinoles.Resources.Enums
 @{
     // Este layout usa como base el layout principal
     Layout = "_Layout";
@@ -11,7 +13,7 @@
             subpages = new object[]{
                 new{
                     title = "Reservar",
-                    href = "/System/Reservations/Create",
+                    href = "/System/Reservations/Create/",
                     icon = "bi-calendar2-plus",
                 },
                 new{
@@ -39,13 +41,8 @@
             icon = "bi-flag-fill"
         },
         new {
-            title = "Configuración",
-            href = "",
-            icon = "bi-gear-fill"
-        },
-        new {
             title = "Clientes",
-            href = "",
+            href = "/System/Clients/",
             icon = "bi-person-fill"
         },
         new {
@@ -62,98 +59,114 @@
         const APIURL = "@(ApiRoutes.APIURL)"
     </script>
 }
-<div class="row vh-100 m-0">
-    <div class="sidebar show border-end shadow">
-        <div class="sidebar-header border-bottom">
-            <div class="sidebar-brand sidebar-text">Los coapinoles</div>
-        </div>
-        <ul class="sidebar-nav">
-            <li class="nav-title sidebar-text">Gestión del sistema</li>
-            @foreach (dynamic item in menuItems ?? []) {
-                var prop = item.GetType().GetProperty("subpages");
-                bool hasSubpages = prop != null;
+<aside class="sidebar border-end shadow">
+    <div class="sidebar-header border-bottom">
+        <div class="sidebar-brand sidebar-text">Los coapinoles</div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="nav-title sidebar-text">Gestión del sistema</li>
+        @foreach (dynamic item in menuItems ?? []) {
+            var prop = item.GetType().GetProperty("subpages");
+            bool hasSubpages = prop != null;
 
-                if (hasSubpages){
-                    <li class="nav-item nav-group show">
-                        <a class="nav-link nav-group-toggle" href="@item.href">
-                            <i class="nav-icon bi @(item.icon)"></i> @item.title
-                        </a>
-                        <ul class="nav-group-items">
-                            @foreach (dynamic subitem in item.subpages){
-                                var subprop = subitem.GetType().GetProperty("subpages");
-                                bool subhasSubpages = subprop != null;
-                                if (subhasSubpages){
-                                    <li class="nav-item nav-group show">
-                                        <a class="nav-link nav-group-toggle ms-3" href="@subitem.href">
-                                            <i class="nav-icon bi @(subitem.icon)"></i> @subitem.title
-                                        </a>
-                                        <ul class="nav-group-items">
-                                            @foreach (dynamic subChilditem in subitem.subpages){
-                                                <li class="nav-item ms-5">
-                                                    <a class="nav-link" href="@subChilditem.href">
-                                                        <span class="nav-icon"><span class="bi @(subChilditem.icon)"></span></span>
-                                                        @subChilditem.title
-                                                    </a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </li>
-                                }else{
-                                    <li class="nav-item ms-3">
-                                        <a class="nav-link" href="@subitem.href">
-                                            <span class="nav-icon"><span class="bi @(subitem.icon)"></span></span>
-                                            @subitem.title
-                                        </a>
-                                    </li>
-                                }
+            if (hasSubpages){
+                <li class="nav-item nav-group show">
+                    <a class="nav-link nav-group-toggle" href="@item.href">
+                        <i class="nav-icon bi @(item.icon)"></i> @item.title
+                    </a>
+                    <ul class="nav-group-items">
+                        @foreach (dynamic subitem in item.subpages){
+                            var subprop = subitem.GetType().GetProperty("subpages");
+                            bool subhasSubpages = subprop != null;
+                            if (subhasSubpages){
+                                <li class="nav-item nav-group show">
+                                    <a class="nav-link nav-group-toggle ms-3" href="@subitem.href">
+                                        <i class="nav-icon bi @(subitem.icon)"></i> @subitem.title
+                                    </a>
+                                    <ul class="nav-group-items">
+                                        @foreach (dynamic subChilditem in subitem.subpages){
+                                            <li class="nav-item ms-5">
+                                                <a class="nav-link" href="@subChilditem.href">
+                                                    <span class="nav-icon"><span class="bi @(subChilditem.icon)"></span></span>
+                                                    @subChilditem.title
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }else{
+                                <li class="nav-item ms-3">
+                                    <a class="nav-link" href="@subitem.href">
+                                        <span class="nav-icon"><span class="bi @(subitem.icon)"></span></span>
+                                        @subitem.title
+                                    </a>
+                                </li>
                             }
-                        </ul>
-                    </li>
-                }else{
-                    <li class="nav-item">
-                        <a class="nav-link" href="@item.href">
-                            <i class="nav-icon bi @(item.icon)"></i> @item.title
-                        </a>
-                    </li>
-                }
+                        }
+                    </ul>
+                </li>
+            }else{
+                <li class="nav-item">
+                    <a class="nav-link" href="@item.href">
+                        <i class="nav-icon bi @(item.icon)"></i> @item.title
+                    </a>
+                </li>
             }
-            <li class="nav-item mt-auto">
-                <a class="nav-link btn border-0" role="button" id="toggleSidebarNarrow">
-                    <i class="nav-icon bi bi-caret-left-fill"></i> Cerrar
-                </a>
+        }
+        <li class="nav-item mt-auto">
+            <a class="nav-link" href="#">
+                <i class="nav-icon bi bi bi-gear-fill"></i> Configuración
+            </a>
+        </li>
+    </ul>
+</aside>
+<main class="flex-grow-1 d-flex flex-column overflow-y-auto bg-dark" style="--cui-bg-opacity: 0.05">
+    <header class="header header-sticky flex-shrink-0">
+        <button class="header-toggler" id="toggleSidebarNarrow">
+            <i class="bi bi-list"></i>
+        </button>
+        <ul class="header-nav">
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button class="btn border-0" data-coreui-toggle="dropdown" aria-expanded="false">
+                        <i class="nav-icon bi bi-person-circle me-2"></i> 
+                        <span class="sidebar-text">
+                            @User.Identity.Name <i class="ms-1 nav-icon bi bi-caret-down-fill"></i>
+                        </span>
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" asp-page="/Logout">
+                                <i class="nav-icon bi bi-box-arrow-in-left"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
-        <div class="sidebar-footer border-top d-flex p-0 pt-2 pb-2">
-            <div class="dropdown">
-                <a class="btn border-0" role="button" data-coreui-toggle="dropdown" aria-expanded="false">
-                    <i class="nav-icon bi bi-person-circle me-2"></i> 
-                    <span class="sidebar-text">
-                        @User.Identity.Name <i class="ms-1 nav-icon bi bi-caret-down-fill"></i>
-                    </span>
-                </a>
+    </header>
+    <div class="flex-grow-1 p-5">
+        @RenderBody()
+        <div aria-live="polite" aria-atomic="true">
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                @if (TempData["Alert.Title"] != null){
+                    var inicio = (DateTime)TempData["Alert.Time"];
+                    var diff = DateTime.Now - inicio;
 
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" asp-page="/Logout">
-                            <i class="nav-icon bi bi-box-arrow-in-left"></i> Cerrar sesión
-                        </a>
-                    </li>
-                </ul>
+                    if (diff.TotalSeconds <= 30){
+                        var alert = new alertVM(
+                            TempData["Alert.Title"]!.ToString()!,
+                            TempData["Alert.Message"]!.ToString()!,
+                            (AlertType)(int)TempData["Alert.Type"]!
+                        );
+                        <partial name="/Pages/Shared/Components/ToastAlert.cshtml" model="alert" />
+                    }
+                }
             </div>
         </div>
     </div>
-
-    <!-- Contenido principal -->
-    <main class="col h-100 p-5 overflow-y-auto" style="background: rgb(0 0 0 / 0.05)">
-        @RenderBody()
-        <div aria-live="polite" aria-atomic="true">
-            <div class="toast-container bottom-0 end-0 p-3">
-                @RenderSection("Notifys", required: false)
-            </div>
-        </div>
-    </main>
-
-</div>
+</main>
 
 @section Scripts {
     <script src="~/lib/coreui/dist/js/coreui.bundle.min.js"></script>

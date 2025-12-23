@@ -1,4 +1,8 @@
 ﻿export default async function callApi(url, body = {}, method = "POST") {
+
+    if (!Boolean(token)) {
+        location.href = '/Login'
+    }
     const options = {
         method,
         headers: {
@@ -6,7 +10,6 @@
             "Authorization": `Bearer ${token}`
         }
     };
-
     if (method !== "GET" && method !== "HEAD") {
         options.body = JSON.stringify(body);
     }

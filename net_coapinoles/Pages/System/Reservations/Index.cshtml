@@ -1,7 +1,7 @@
 ﻿@page
 @section HeadContent {
+    <link rel="stylesheet" href="~/lib/MCDatepicker-master/dist/mc-calendar.min.css" />
     <link rel="stylesheet" href="~/lib/data-table/datatables.min.css" />
-    <link rel="stylesheet" href="~/css/table.css" />
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb ">
@@ -16,20 +16,30 @@
         </h1>
     </div>
     <div class="col-auto">
-        <a class="btn btn-primary position-relative top-50 translate-middle-y" asp-page="./Create">
+        <a class="btn btn-primary position-relative top-50 translate-middle-y" href="./Create/">
             <i class="me-1 bi bi-plus-lg"></i> Nueva reservación
         </a>
     </div>
     <div class="col-12">
-        <partial name="/Pages/Shared/Components/Reservations/Table.cshtml"/>
+        <partial name="/Pages/Shared/Components/Table.cshtml" model='new string[]{
+            "",
+            "Fecha",
+            "Confirmación",
+            "Cliente",
+            "Celular",
+            "Transporte",
+            "Adulto",
+            "Menor",
+            "Usuario"
+        }' />
     </div>
 </div>
-<div class="modal fade" id="modalServices" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" id="modal-content">
-    </div>
+<div class="modal fade" id="modalServices" tabindex="-1">
+    <div class="modal-dialog modal-content"></div>
 </div>
 
+<partial name="/Pages/Shared/Components/loadScreen.cshtml" />
+
 @section ScriptsContent {
-    <script src="~/lib/data-table/datatables.js"></script>
-    <script type="module" src="~/js/reservations/table.js"></script>
+    <script type="module" src="~/js/reservations/page.js"></script>
 }

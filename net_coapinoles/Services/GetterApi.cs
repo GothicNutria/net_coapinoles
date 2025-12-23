@@ -3,9 +3,13 @@ using System.Collections;
 
 namespace net_coapinoles.Services {
     public class GetterApi {
-        public static async Task<ResReservacion[]> GetReservations(int id = 0)=>
-            await ApiHelper.CallApiAsync<ResReservacion[]>(
+        public static async Task<ResReservaciones[]> GetReservations(int id)=>
+            await ApiHelper.CallApiAsync<ResReservaciones[]>(
                 ApiRoutes.Reservas.Listado, new {id}
+            );
+        public static async Task<ResReservacionDetalles> GetReserveDetails(int id) =>
+            await ApiHelper.CallApiAsync<ResReservacionDetalles>(
+                ApiRoutes.Reservas.GetDetails, id, "GET"
             );
         public static async Task<Cliente[]> GetClients() =>
             await ApiHelper.CallApiAsync<Cliente[]>(

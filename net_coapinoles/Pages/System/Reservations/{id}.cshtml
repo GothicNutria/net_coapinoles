@@ -1,0 +1,148 @@
+﻿@page
+@model net_coapinoles.Pages.System.Reservations.ShowModel
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb ">
+        <li class="breadcrumb-item" aria-current="page">Sistema</li>
+        <li class="breadcrumb-item" aria-current="page"><a href="./" class="text-decoration-none">Reservaciones</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Reserva: @Model.confirmacion </li>
+    </ol>
+</nav>
+<div class="card needs-validation">
+    <div class="card-body row g-1">
+        <fieldset class="row col-12 g-2">
+            <legend>Información de la reservación</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input class="form-control" value="@Model.fecha" readonly placeholder=" " />
+                <label >
+                    <i class="bi bi-calendar2-range-fill me-1 text-muted"></i>
+                    Fecha de la reserva
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                <input class="form-control" value="@Model.hora" readonly placeholder=" " />
+                <label>
+                    <i class="bi bi-alarm-fill me-1 text-muted"></i>
+                    Hora de reserva
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating dropdown">
+                <input class="form-control" value="@Model.tipo_reserva" readonly placeholder=" " />
+                <label>
+                    <i class="bi bi-hash me-1 text-muted"></i>
+                    Tipo de reservación
+                </label>
+            </div>
+        </fieldset>
+        <fieldset class="row col-12 g-2">
+            <legend>Transporte</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <div class="form-control">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" @(Model.transport == true ? "checked" : "") type="checkbox" readonly>
+                        <label class="form-check-label">
+                            @(Model.transport == true ? "Con transporte" : "Sin transporte")
+                        </label>
+                    </div>
+                </div>
+                <label>
+                    <i class="bi bi-bus-front-fill me-1 text-muted"></i>
+                    ¿Con transporte incluido?
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating @(Model.transport == true ? "" : "d-none")  transport-related dropdown">
+                <input class="form-control" readonly placeholder=" " />
+                <label>
+                    <i class="bi bi-geo-alt-fill me-1 text-muted"></i>
+                    @Model.Point
+                </label>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3 form-floating @(Model.transport == true ? "" : "d-none") transport-related dropdown">
+                <input class="form-control" readonly placeholder=" " />
+                <label>
+                    <i class="bi bi-clock-fill me-1 text-muted"></i>
+                    @Model.PointHour
+                </label>
+            </div>
+        </fieldset>
+        <fieldset class="row col-12 g-2">
+            <legend>Información del cliente</legend>
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
+                <input class="form-control" value="@(Model.clientName)" readonly placeholder=" " />
+                <label for="client">
+                    <i class="bi bi-person-fill me-1 text-muted"></i>
+                    Nombre
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 form-floating">
+                <input class="form-control" value="@(Model.clientTel)" readonly placeholder=" " />
+                <label for="number_phone">
+                    <i class="bi bi-telephone-fill me-1 text-muted"></i>
+                    Número de celular
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset class="row col-12 g-2">
+            <legend>Cantidad de personas</legend>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input class="form-control" value="@(Model.ad)" readonly placeholder=" " />
+                <label class="w-100">
+                    Adultos
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input class="form-control" value="@(Model.mn)" readonly placeholder=" " />
+                <label class="w-100">
+                    Menores
+                </label>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 form-floating">
+                <input class="form-control" value="@(Model.insen)" readonly placeholder=" " />
+                <label class="w-100">
+                    3ra Edad (INSEN)
+                </label>
+            </div>
+        </fieldset>
+
+        <div class="row col-12 col-md-9 row g-2">
+            <fieldset class="col-5">
+                <legend>Notas</legend>
+                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
+                    <textarea class="form-control" style="height: 100px" readonly>@(Model.notes)</textarea>
+                    <label class="w-100">
+                        Notas adicionales
+                    </label>
+                </div>
+            </fieldset>
+            <fieldset class="d-none col-3" id="pagement">
+                <legend>Pago</legend>
+                <div class="col-12 col-md-6 col-lg-3 w-100 form-floating dropdown">
+                    <input class="form-control" value="@Model.method_pay" readonly placeholder=" " />
+                    <label for="method_page">
+                        <i class="bi bi-credit-card-2-back-fill me-1 text-muted"></i>
+                        Forma de pago
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+        <fieldset class="row flex-column col-12 col-md-3 g-2 justify-content-end" style="display: none" id="totalCost">
+            <legend>Costo</legend>
+            <div class="w-100 d-flex flex-column gap-2">
+                <div class="col form-floating">
+                    <div class="form-control">
+                        <label class="mb-0">$@Model.priceMXN</label>
+                    </div>
+                    <label class="w-100">Total MXN</label>
+                </div>
+                <div class="col form-floating">
+                    <div class="form-control">
+                        <label class="mb-0">$@Model.priceUSD</label>
+                    </div>
+                    <label class="w-100">Total USD</label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

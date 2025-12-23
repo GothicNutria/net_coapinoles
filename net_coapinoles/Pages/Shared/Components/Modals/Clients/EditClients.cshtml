@@ -1,0 +1,61 @@
+﻿@page
+@{
+}
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/intl-tel-input/intlTelInput.css" />
+<div class="modal-dialog modal-dialog-centered">
+    <form method="post" class="needs-validation modal-content" novalidate>
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+                Editar cliente
+            </h5>
+            <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input id="nameIn" value="" type="text" class="form-control" placeholder=" " autocomplete="off">
+                        <label for="nameIn">
+                            <i class="bi bi-card-checklist me-1 text-muted"></i>
+                            Nombre del cliente                            
+                        </label>
+                        <div class="invalid-feedback">
+                            Ingrese el nombre del cliente
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <div class="form-control">
+                            <input type="hidden" id="internationalNumberPhone"/>
+                            <input id="telIn" value="" style="border-color: transparent; outline: none; margin-left: 20px !important" type="tel" placeholder=" " autocomplete="off">
+                        </div>
+                        <label for="telIn">
+                            <i class="bi bi-card-checklist me-1 text-muted"></i>
+                            Teléfono                         
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input id="emailIn" value="" type="email" class="form-control" placeholder=" " autocomplete="off">
+                        <label for="emailIn">
+                            <i class="bi bi-card-checklist me-1 text-muted"></i>
+                            Correo                         
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-secondary" data-coreui-dismiss="modal" value="Cancelar" />
+            <button type="submit" class="btn btn-primary btn-submit-edit">
+                <i class="bi bi-pencil-fill me-1"></i>
+                Confirmar
+            </button>
+        </div>
+    </form>
+</div>

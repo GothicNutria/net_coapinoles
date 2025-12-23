@@ -1,5 +1,6 @@
 ﻿import { formateTel } from "./components/formatTelephone.js"
-$(function () {
+
+export default function () {
     const forms = $('.needs-validation');
 
     $("input[type='tel']").each(function () {
@@ -29,19 +30,28 @@ $(function () {
 
 
     forms.on('submit', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const form = this;
 
+
         if (!form.checkValidity()) {
-            e.preventDefault();
-            e.stopPropagation();
+            $(form).addClass('was-validated');
+            return; // NO disparar form:valid
         }
 
         $(form).addClass('was-validated');
+        $(form).trigger('form:valid'); // solo aquí si pasa validación
     });
+
 
     $(document).on("click", ".form-floating .dropdown-item", function (e) {
         e.preventDefault();
+        const menu = $(this).closest(".dropdown-menu");
+
         const val = $(this).attr("data");         // valor real
+        const content = $(this).data("content");              // texto visible
         const text = $(this).text();              // texto visible
 
         // Buscar el dropdown correspondiente
@@ -49,10 +59,10 @@ $(function () {
         $container.find(".dropdown-text").text(text)
 
         // Actualizar input hidden
-        const targetInput = $container.find("input[type='hidden']");
-        targetInput.val(val);
+        const targetInput = $container.find(menu.data("target"));
+        targetInput.data("name", content)
+        targetInput.val(val).trigger("change");
     });
-
     $(document).on("change", ".form-floating .form-check-input", function (e) {
         const checkbox = $(this);
         const value = checkbox.is(":checked");
@@ -63,4 +73,4 @@ $(function () {
         $container.find(".form-check-label").text(element)
     });
 
-});
+}

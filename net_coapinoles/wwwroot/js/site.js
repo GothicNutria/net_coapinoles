@@ -4,26 +4,18 @@
     const storageKey = "sidebarNarrow";
 
     if (localStorage.getItem(storageKey) === "1") {
-        $sidebar.addClass("sidebar-narrow");
-        $("#toggleSidebarNarrow i")
-            .removeClass("bi-caret-left-fill")
-            .addClass("bi-caret-right-fill");
+        $sidebar.addClass("sidebar-narrow show");
     }
 
     $("#toggleSidebarNarrow").on("click", function () {
 
-        $sidebar.toggleClass("sidebar-narrow");
-        const active = $sidebar.hasClass("sidebar-narrow") ? "1" : "0";
+        $sidebar.toggleClass("sidebar-narrow show");
+        const active = $sidebar.hasClass("sidebar-narrow show") ? "1" : "0";
 
-        if (active === "1") {
-            $("#toggleSidebarNarrow i")
-                .removeClass("bi-caret-left-fill")
-                .addClass("bi-caret-right-fill");
-        } else {
-            $("#toggleSidebarNarrow i")
-                .removeClass("bi-caret-right-fill")
-                .addClass("bi-caret-left-fill");
+        if (active && $(window).width() > 992) {
+
         }
+
 
         localStorage.setItem(storageKey, active);
     });
